@@ -26,7 +26,7 @@ Page({
     peisongType: 'kd', // 配送方式 kd,zq 分别表示快递/到店自取
     remark: ''
   },
-  onShow(){
+  onShow() {
     AUTH.checkHasLogined().then(isLogined => {
       this.setData({
         wxlogin: isLogined
@@ -88,18 +88,23 @@ Page({
     }
     return aaa;
   },
-  remarkChange(e){
+  remarkChange(e) {
     this.data.remark = e.detail.value
   },
-  goCreateOrder(){
+  goCreateOrder() {
     wx.requestSubscribeMessage({
       tmplIds: ['ITVuuD_cwYN-5BjXne8cSktDo43xetj0u-lpvFZEQQs',
         'dw9Tzh9r0sw7Gjab0ovQJx3bP3gdXmF_FZvpnxPd6hc'],
       success(res) {
-        
+
       },
       fail(e) {
         console.error(e)
+        wx.showModal({
+          title: '错误',
+          content: `${JSON.stringify(e)}`,
+          showCancel: false
+        })
       },
       complete: (e) => {
         this.createOrder(true)
@@ -123,16 +128,16 @@ Page({
     if (that.data.pingtuanOpenId) {
       postData.pingtuanOpenId = that.data.pingtuanOpenId
     }
-    if (that.data.isNeedLogistics > 0 && postData.peisongType == 'kd') {
+    if (that.data.isNeedLogistics > 0 && (postData.peisongType == 'kd' || postData.peisongType == 'zt')) {
       if (!that.data.curAddressData) {
         wx.hideLoading();
         wx.showToast({
-          title: '请设置收货地址',
+          title: postData.peisongType == 'kd' ? '请设置收货地址' : '请设置自提点',
           icon: 'none'
         })
         return;
       }
-      if (postData.peisongType == 'kd') {
+      if (postData.peisongType == 'kd' || postData.peisongType == 'zt') {
         postData.provinceId = that.data.curAddressData.provinceId;
         postData.cityId = that.data.curAddressData.cityId;
         if (that.data.curAddressData.districtId) {
@@ -142,7 +147,7 @@ Page({
         postData.linkMan = that.data.curAddressData.linkMan;
         postData.mobile = that.data.curAddressData.mobile;
         postData.code = that.data.curAddressData.code;
-      }      
+      }
     }
     if (that.data.curCoupon) {
       postData.couponId = that.data.curCoupon.id;
@@ -192,7 +197,7 @@ Page({
       });
       return
     }
-    const money = res.data.amountReal * 1 - res1.data.balance*1
+    const money = res.data.amountReal * 1 - res1.data.balance * 1
     if (money <= 0) {
       wx.redirectTo({
         url: "/pages/order-list/index"
@@ -212,6 +217,25 @@ Page({
         curAddressData: null
       });
     }
+
+    const szres = await WXAPI.jsonList({ token: wx.getStorageSync('token'), type: "zt-address" })
+    const zt_id = szres.data[0].jsonData.zt_id
+    console.log(`zt_id: ${zt_id}`)
+    if (szres.code === 0 && zt_id !== 0) {
+      const zt_res = await WXAPI.request('/mock/address/zt_address', true, 'get', {});
+
+      const r = JSON.parse(zt_res)
+      if (r.code == 0) {
+        let info = {}
+        r.data.map((v) => {
+          if (v.id == zt_id) {
+            info = v;
+          }
+        });
+        this.setData({ curZTAddressData: info })
+      }
+    }
+
     this.processYunfei();
   },
   processYunfei() {
@@ -266,6 +290,11 @@ Page({
       url: "/pages/select-address/index"
     })
   },
+  selectZTAddress: function () {
+    wx.navigateTo({
+      url: "/pages/select-ztaddress/index"
+    })
+  },
   async getMyCoupons() {
     const res = await WXAPI.myCoupons({
       token: wx.getStorageSync('token'),
@@ -294,7 +323,7 @@ Page({
       curCouponShowText: this.data.coupons[selIndex].nameExt
     });
   },
-  radioChange (e) {
+  radioChange(e) {
     this.setData({
       peisongType: e.detail.value
     })

@@ -99,6 +99,7 @@ var subDomain = 'tz';
 
 var request = function request(url, needSubDomain, method, data) {
   var _url = API_BASE_URL + (needSubDomain ? '/' + subDomain : '') + url;
+  console.log(`url: ${_url}`)
   return new Promise(function (resolve, reject) {
     wx.request({
       url: _url,

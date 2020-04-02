@@ -26,11 +26,17 @@
     <view class="row-box" wx:if="{{isNeedLogistics > 0}}">
       <view class="row-label">配送方式</view>
       <radio-group bindchange="radioChange">
-        <label class="radio">
-          <radio value="kd" checked="{{peisongType == 'kd'}}" /> 快递
+        <label class="radio row-label">
+          <radio value="kd" checked="{{peisongType == 'kd'}}" />
+          快递
         </label>
-        <label class="radio" wx:if='{{allowSelfCollection == "1"}}'>
-          <radio value="zq" checked="{{peisongType == 'zq'}}" /> 到店自取
+        <label class="radio row-label">
+          <radio value="zt" checked="{{peisongType == 'zt'}}" />
+          自提点
+        </label>
+        <label class="radio row-label" wx:if='{{allowSelfCollection == "1"}}'>
+          <radio value="zq" checked="{{peisongType == 'zq'}}" />
+          到店自取
         </label>
       </radio-group>
     </view>
@@ -42,6 +48,16 @@
       <view class="show-address" hidden="{{!curAddressData}}" bindtap="selectAddress">
         <view class="name-tel">{{curAddressData.linkMan}} {{curAddressData.mobile}}</view>
         <view class="addr-text">{{curAddressData.address}}</view>
+      </view>
+    </view>
+    <view class="address-box" wx:if="{{peisongType == 'zt' && isNeedLogistics > 0}}">
+      <view class="add-address" hidden="{{curAddressData}}" bindtap="selectZTAddress">
+        <image src="/images/add-addr.png"></image>
+        <view>选择自提点</view>
+      </view>
+      <view class="show-address" hidden="{{!curZTAddressData}}" bindtap="selectZTAddress">
+        <view class="name-tel">{{curZTAddressData.linkMan}} {{curZTAddressData.mobile}}</view>
+        <view class="addr-text">{{curZTAddressData.address}}</view>
       </view>
     </view>
     <view class="row-box">
@@ -56,14 +72,12 @@
       <view class="row-label t">使用优惠券</view>
     </view>
     <picker bindchange="bindChangeCoupon" range="{{coupons}}" range-key="nameExt">
-      <view class="row-box" style="border-bottom:none;">      
+      <view class="row-box" style="border-bottom:none;">
         <view class="row-label">{{curCouponShowText}}</view>
         <image class="next" src="/images/icon/next.png"></image>
       </view>
     </picker>
   </view>
-
-
   <view class="goods-info">
     <view class="row-box">
       <view class="row-label">商品金额</view>
@@ -78,7 +92,6 @@
       <view class="right-text">- ¥ {{youhuijine}}</view>
     </view>
   </view>
-
   <view class="jiesuan-box safeAreaOldPaddingBttom safeAreaNewPaddingBttom">
     <view class="left-price">
       <view class="total">合计：¥ {{allGoodsAndYunPrice - youhuijine}} + {{totalScoreToPay}} 积分</view>
@@ -86,6 +99,5 @@
     <button class="to-pay-btn" bindtap="goCreateOrder">提交订单</button>
   </view>
 </view>
-
 <import src="/template/login/index.wxml" />
 <template is="apifmLogin" data="{{wxlogin: wxlogin}}" />

@@ -27,7 +27,7 @@ Page({
         provinces: provinces
       })
       if (provinceId) {
-        const e = { detail: { value: pIndex}}
+        const e = { detail: { value: pIndex } }
         this.provinceChange(e, cityId, districtId)
       }
     }
@@ -108,17 +108,17 @@ Page({
     const index = e.detail.value
     this.setData({
       aIndex: index
-    })  
+    })
   },
   async bindSave(e) {
-    if (this.data.pIndex == 0 ) {
+    if (this.data.pIndex == 0) {
       wx.showToast({
         title: '请选择省份',
         icon: 'none'
       })
       return
     }
-    if (this.data.cIndex == 0 ) {
+    if (this.data.cIndex == 0) {
       wx.showToast({
         title: '请选择城市',
         icon: 'none'
@@ -128,28 +128,28 @@ Page({
     const linkMan = e.detail.value.linkMan;
     const address = e.detail.value.address;
     const mobile = e.detail.value.mobile;
-    const code = '322000';
-    if (linkMan == ""){
+    const code = '000000';
+    if (linkMan == "") {
       wx.showToast({
         title: '请填写联系人姓名',
         icon: 'none'
       })
       return
     }
-    if (mobile == ""){
+    if (mobile == "") {
       wx.showToast({
         title: '请填写手机号码',
         icon: 'none'
       })
       return
     }
-    if (address == ""){
+    if (address == "") {
       wx.showToast({
         title: '请填写详细地址',
         icon: 'none'
       })
       return
-    }    
+    }
     const postData = {
       token: wx.getStorageSync('token'),
       linkMan: linkMan,
@@ -166,7 +166,7 @@ Page({
     }
     if (this.data.aIndex > 0) {
       postData.districtId = this.data.areas[this.data.aIndex].id
-    }    
+    }
     let apiResult
     if (this.data.id) {
       postData.id = this.data.id
