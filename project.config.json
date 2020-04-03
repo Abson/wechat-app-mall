@@ -19,9 +19,8 @@
 		}
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.10.2",
+	"libVersion": "2.10.3",
 	"appid": "wx512e58bc605646d3",
-	"projectname": "%E6%9C%89%E7%94%A8%E5%95%86%E5%9F%8E",
 	"scripts": {},
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
@@ -44,8 +43,7 @@
 		},
 		"miniprogram": {
 			"current": 7,
-			"list": [
-				{
+			"list": [{
 					"id": -1,
 					"name": "home",
 					"pathName": "pages/index/index",

@@ -133,10 +133,10 @@
   <view class='space'></view>
   <view class="goods-des-info" style="margin-top:35rpx;" wx:if="{{pingtuanList}}">
     <view class="label-title" style="border-bottom:1px solid #eee;">{{pingtuanList.length}}人在拼单，可直接参与</view>
-    <view class="goods-text" style="margin-top:15rpx;border-bottom:1px solid #eee;" wx:for="{{pingtuanList}}" wx:key="id">
+    <view class="goods-text" style="margin-top:15rpx;border-bottom:1px solid #eee;overflow:hidden;" wx:for="{{pingtuanList}}" wx:key="id">
       <view style="width:150rpx;float:left;">
         <image style="width: 150rpx; height: 150rpx;" src="{{item.apiExtUser.avatarUrl}}"></image>
-        <view style="width:150rpx;text-align:center;">{{item.apiExtUser.nick}}</view>
+        <view style="width:150rpx;text-align:center;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.apiExtUser.nick}}</view>
       </view>
       <view style="width:500rpx;float:left;margin-left:35rpx;">
         <view>已有
@@ -173,6 +173,13 @@
       </view>
     </view>
   </view>
+  <view wx:if="{{shopSubdetail}}" class="shop-container">
+    <image mode="aspectFill" src="{{shopSubdetail.info.pic}}"></image>
+    <view class="info">
+      <view class="title">{{shopSubdetail.info.name}}</view>
+      <view class="address">{{shopSubdetail.info.address}}</view>
+    </view>
+  </view>
   <view class="goods-des-info">
     <view class="label-title">商品介绍</view>
     <view class="goods-text">
@@ -183,7 +190,7 @@
     <view class="label-title" style="border-bottom:1px solid #eee;">大家评价
       <text style="color:red">（{{reputation.length}}）</text>
     </view>
-    <view class="goods-text" style="margin-top:15rpx;" wx:for="{{reputation}}" wx:key="id">
+    <view class="goods-text clearfix"  style="margin-top:15rpx;" wx:for="{{reputation}}" wx:key="id">
       <view style="width:100rpx;float:left;">
         <image style="width: 100rpx; height: 100rpx;" src="{{item.user.avatarUrl}}"></image>
         <view style="text-align:center;width:100rpx;">{{item.goods.goodReputationStr}}</view>

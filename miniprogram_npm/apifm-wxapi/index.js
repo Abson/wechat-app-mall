@@ -661,6 +661,8 @@ module.exports = {
     return request('/qrcode/wxa/unlimit', true, 'post', data);
   },
   uploadFile: function uploadFile(token, tempFilePath) {
+    var expireHours = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+
     var uploadUrl = API_BASE_URL + '/' + subDomain + '/dfs/upload/file';
     return new Promise(function (resolve, reject) {
       wx.uploadFile({
@@ -668,7 +670,8 @@ module.exports = {
         filePath: tempFilePath,
         name: 'upfile',
         formData: {
-          'token': token
+          'token': token,
+          expireHours: expireHours
         },
         success: function success(res) {
           resolve(JSON.parse(res.data));
@@ -1018,6 +1021,9 @@ module.exports = {
   },
   siteStatistics: function siteStatistics() {
     return request('/site/statistics', true, 'get');
+  },
+  fetchSubDomainByWxappAppid: function fetchSubDomainByWxappAppid(appid) {
+    return request('/subdomain/appid/wxapp', false, 'get', { appid: appid });
   },
   cmsArticleFavPut: function cmsArticleFavPut(token, newsId) {
     return request('/cms/news/fav/add', true, 'post', { token: token, newsId: newsId });
