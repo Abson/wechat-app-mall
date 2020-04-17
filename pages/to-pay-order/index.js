@@ -41,6 +41,8 @@ Page({
     if (!allowSelfCollection || allowSelfCollection != '1') {
       allowSelfCollection = '0'
       this.data.peisongType = 'kd'
+    } else {
+      this.data.peisongType = 'zq'
     }
     let shopList = [];
     const token = wx.getStorageSync('token')
@@ -116,11 +118,15 @@ Page({
     var loginToken = wx.getStorageSync('token') // 用户登录 token
     var remark = this.data.remark; // 备注信息
 
+    // abson: 自提点业务适合为 zq
+    let { peisongType } = that.data;
+    // peisongType = peisongType == "zt" ? "zq" : peisongType;
+
     let postData = {
       token: loginToken,
       goodsJsonStr: that.data.goodsJsonStr,
       remark: remark,
-      peisongType: that.data.peisongType
+      peisongType: peisongType
     };
     if (that.data.kjId) {
       postData.kjid = that.data.kjId
@@ -128,16 +134,16 @@ Page({
     if (that.data.pingtuanOpenId) {
       postData.pingtuanOpenId = that.data.pingtuanOpenId
     }
-    if (that.data.isNeedLogistics > 0 && (postData.peisongType == 'kd' || postData.peisongType == 'zt')) {
+    if (that.data.isNeedLogistics > 0 && postData.peisongType == 'kd') {
       if (!that.data.curAddressData) {
         wx.hideLoading();
         wx.showToast({
-          title: postData.peisongType == 'kd' ? '请设置收货地址' : '请设置自提点',
+          title: '请设置收货地址',
           icon: 'none'
-        })
+        });
         return;
       }
-      if (postData.peisongType == 'kd' || postData.peisongType == 'zt') {
+      if (postData.peisongType == 'kd') {
         postData.provinceId = that.data.curAddressData.provinceId;
         postData.cityId = that.data.curAddressData.cityId;
         if (that.data.curAddressData.districtId) {
@@ -149,6 +155,28 @@ Page({
         postData.code = that.data.curAddressData.code;
       }
     }
+
+    // 自提点数据设置，为订单扩展字段
+    const { curZTAddressData } = that.data;
+    if (postData.peisongType == 'zq') {
+      if (!curZTAddressData) {
+        wx.hideLoading();
+        wx.showToast({
+          title: '请设置自提点',
+          icon: 'icon'
+        });
+        return;
+      }
+      postData.addAddress = curZTAddressData.address;
+      postData.mobile = curZTAddressData.mobile;
+      postData.linkMan = curZTAddressData.linkMan;
+      postData.extJsonStr = JSON.stringify({
+        "zt_addr": curZTAddressData.address,
+        "zt_mob": curZTAddressData.mobile,
+        "zt_linkman": curZTAddressData.linkMan
+      })
+    }
+
     if (that.data.curCoupon) {
       postData.couponId = that.data.curCoupon.id;
     }
@@ -218,10 +246,11 @@ Page({
       });
     }
 
-    const szres = await WXAPI.jsonList({ token: wx.getStorageSync('token'), type: "zt-address" })
-    const zt_id = szres.data[0].jsonData.zt_id
+    // const szres = await WXAPI.jsonList({ token: wx.getStorageSync('token'), type: "zt-address" })
+    // const zt_id = szres.data[0].jsonData.zt_id
+    const zt_id = JSON.parse(wx.getStorageSync("zt_addr")).zt_id;
     console.log(`zt_id: ${zt_id}`)
-    if (szres.code === 0 && zt_id !== 0) {
+    if (zt_id !== 0) {
       const zt_res = await WXAPI.request('/mock/address/zt_address', true, 'get', {});
 
       const r = JSON.parse(zt_res)
@@ -232,16 +261,18 @@ Page({
             info = v;
           }
         });
-        this.setData({ curZTAddressData: info })
+        this.setData({
+          curZTAddressData: info
+        });
       }
     }
 
     this.processYunfei();
   },
-  processYunfei() {    
+  processYunfei() {
     var goodsList = this.data.goodsList
     if (goodsList.length == 0) {
-      return
+      return;
     }
     var goodsJsonStr = "[";
     var isNeedLogistics = 0;

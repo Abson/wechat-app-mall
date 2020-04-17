@@ -18,31 +18,37 @@ Page({
     // })
     const json = {
       zt_id: id,
-      isDefault: 'true',
     }
+    // try {
+    //   const res = await WXAPI.jsonSet({
+    //     token: wx.getStorageSync('token'),
+    //     type: "zt-address",
+    //     content: JSON.stringify(json)
+    //   })
+    //   wx.navigateBack({})
+    // } catch (err) {
+    //   wx.showToast({ title: "设置自提点失败", icon: 'none' })
+    // }
+
     try {
-      const res = await WXAPI.jsonSet({
-        token: wx.getStorageSync('token'),
-        type: "zt-address",
-        content: JSON.stringify(json)
-      })
+      wx.setStorageSync("zt_addr", JSON.stringify(json))
       wx.navigateBack({})
-    } catch (err) {
+    } catch {
       wx.showToast({ title: "设置自提点失败", icon: 'none' })
     }
   },
 
-  addAddess: function () {
-    wx.navigateTo({
-      url: "/pages/address-add/index"
-    })
-  },
+  // addAddess: function () {
+  //   wx.navigateTo({
+  //     url: "/pages/address-add/index"
+  //   })
+  // },
 
-  editAddess: function (e) {
-    wx.navigateTo({
-      url: "/pages/address-add/index?id=" + e.currentTarget.dataset.id
-    })
-  },
+  // editAddess: function (e) {
+  //   wx.navigateTo({
+  //     url: "/pages/address-add/index?id=" + e.currentTarget.dataset.id
+  //   })
+  // },
 
   onLoad: function () {
   },

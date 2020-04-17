@@ -23,20 +23,20 @@
     </view>
   </view>
   <view class="peisong-way">
-    <view class="row-box" wx:if="{{isNeedLogistics > 0}}">
+    <view class="row-box">
       <view class="row-label">配送方式</view>
       <radio-group bindchange="radioChange">
-        <label class="radio row-label">
+        <label class="radio row-label" wx:if="{{isNeedLogistics > 0}}">
           <radio value="kd" checked="{{peisongType == 'kd'}}" />
           快递
         </label>
-        <label class="radio row-label">
+        <!-- <label class="radio row-label">
           <radio value="zt" checked="{{peisongType == 'zt'}}" />
           自提点
-        </label>
+        </label> -->
         <label class="radio row-label" wx:if='{{allowSelfCollection == "1"}}'>
           <radio value="zq" checked="{{peisongType == 'zq'}}" />
-          到店自取
+          自提点
         </label>
       </radio-group>
     </view>
@@ -55,8 +55,8 @@
         </view>
       </view>
     </view>
-    <view class="address-box" wx:if="{{peisongType == 'zt' && isNeedLogistics > 0}}">
-      <view class="add-address" hidden="{{curAddressData}}" bindtap="selectZTAddress">
+    <view class="address-box" wx:if="{{peisongType == 'zq'}}">
+      <view class="add-address" hidden="{{curZTAddressData}}" bindtap="selectZTAddress">
         <image src="/images/add-addr.png"></image>
         <view>选择自提点</view>
       </view>

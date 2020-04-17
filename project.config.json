@@ -20,7 +20,7 @@
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.10.3",
-	"appid": "wx512e58bc605646d3",
+	"appid": "wxa205dc74e82db765",
 	"scripts": {},
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
@@ -43,7 +43,8 @@
 		},
 		"miniprogram": {
 			"current": 7,
-			"list": [{
+			"list": [
+				{
 					"id": -1,
 					"name": "home",
 					"pathName": "pages/index/index",
