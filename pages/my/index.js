@@ -5,18 +5,18 @@ const AUTH = require('../../utils/auth')
 const TOOLS = require('../../utils/tools.js')
 
 Page({
-	data: {
+  data: {
     wxlogin: true,
 
-    balance:0.00,
-    freeze:0,
-    score:0,
-    growth:0,
-    score_sign_continuous:0,
+    balance: 0.00,
+    freeze: 0,
+    score: 0,
+    growth: 0,
+    score_sign_continuous: 0,
     rechargeOpen: false // 是否开启充值[预存]功能
   },
-	onLoad() {
-	},	
+  onLoad() {
+  },
   onShow() {
     const _this = this
     const order_hx_uids = wx.getStorageSync('order_hx_uids')
@@ -29,7 +29,7 @@ Page({
       this.setData({
         wxlogin: isLogined
       })
-      if (isLogined) {        
+      if (isLogined) {
         _this.getUserApiInfo();
         _this.getUserAmount();
       }
@@ -37,20 +37,20 @@ Page({
     // 获取购物车数据，显示TabBarBadge
     TOOLS.showTabBarBadge();
   },
-  aboutUs : function () {
+  aboutUs: function () {
     wx.showModal({
       title: '关于我们',
-      content: '本系统基于开源小程序商城系统 https://github.com/EastWorld/wechat-app-mall 搭建，祝大家使用愉快！',
-      showCancel:false
+      content: '本商城由佛山禅城佳品鲜冷冻汇搭建，关注微信公众号查看更多信息，祝大家使用愉快',
+      showCancel: false
     })
   },
-  loginOut(){
+  loginOut() {
     AUTH.loginOut()
     wx.reLaunch({
       url: '/pages/my/index'
     })
   },
-  getPhoneNumber: function(e) {
+  getPhoneNumber: function (e) {
     if (!e.detail.errMsg || e.detail.errMsg != "getPhoneNumber:ok") {
       wx.showModal({
         title: '提示',
@@ -146,7 +146,7 @@ Page({
     }
     AUTH.register(this);
   },
-  scanOrderCode(){
+  scanOrderCode() {
     wx.scanCode({
       onlyFromCamera: true,
       success(res) {
@@ -163,7 +163,7 @@ Page({
       }
     })
   },
-  clearStorage(){
+  clearStorage() {
     wx.clearStorageSync()
     wx.showToast({
       title: '已清除',
