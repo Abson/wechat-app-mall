@@ -65,6 +65,12 @@
         <view class="addr-text">{{curZTAddressData.address}}</view>
       </view>
     </view>
+    <view class="row-box" wx:if="{{peisongType == 'zq'}}">
+      <view class="row-label">联系方式</view>
+      <view class="right-text">
+        <input bindinput="contactChange" type="text" class="liuyan" placeholder=" 填写您的手机号码" />
+      </view>
+    </view>
     <view class="row-box">
       <view class="row-label">备注</view>
       <view class="right-text">

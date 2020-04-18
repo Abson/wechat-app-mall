@@ -24,7 +24,8 @@ Page({
     curCouponShowText: '请选择使用优惠券', // 当前选择使用的优惠券
     allowSelfCollection: '0', // 是否允许到店自提
     peisongType: 'kd', // 配送方式 kd,zq 分别表示快递/到店自取
-    remark: ''
+    remark: '',
+    contact: '',
   },
   onShow() {
     AUTH.checkHasLogined().then(isLogined => {
@@ -37,13 +38,13 @@ Page({
     })
   },
   async doneShow() {
+    this.data.peisongType = 'zq'
     let allowSelfCollection = wx.getStorageSync('ALLOW_SELF_COLLECTION')
     if (!allowSelfCollection || allowSelfCollection != '1') {
       allowSelfCollection = '0'
       this.data.peisongType = 'kd'
-    } else {
-      this.data.peisongType = 'zq'
     }
+
     let shopList = [];
     const token = wx.getStorageSync('token')
     //立即购买下单
@@ -93,10 +94,14 @@ Page({
   remarkChange(e) {
     this.data.remark = e.detail.value
   },
+  contactChange(e) {
+    this.data.contact = e.detail.value
+  },
   goCreateOrder() {
     wx.requestSubscribeMessage({
-      tmplIds: ['ITVuuD_cwYN-5BjXne8cSktDo43xetj0u-lpvFZEQQs',
-        'dw9Tzh9r0sw7Gjab0ovQJx3bP3gdXmF_FZvpnxPd6hc'],
+      // tmplIds: ['ITVuuD_cwYN-5BjXne8cSktDo43xetj0u-lpvFZEQQs',
+      //   'dw9Tzh9r0sw7Gjab0ovQJx3bP3gdXmF_FZvpnxPd6hc'],
+      tmplIds: ['Vp-JRDbUoEWjPkYk03C6xwlxkDGEpMOcnm0DpW6t6Kg'],
       success(res) {
 
       },
@@ -126,7 +131,8 @@ Page({
       token: loginToken,
       goodsJsonStr: that.data.goodsJsonStr,
       remark: remark,
-      peisongType: peisongType
+      peisongType: peisongType,
+      isCanHx: true
     };
     if (that.data.kjId) {
       postData.kjid = that.data.kjId
@@ -163,17 +169,28 @@ Page({
         wx.hideLoading();
         wx.showToast({
           title: '请设置自提点',
-          icon: 'icon'
+          icon: 'none'
         });
         return;
       }
+
+      if (that.data.contact.length != 11) {
+        wx.hideLoading();
+        wx.showToast({
+          title: '请填写您的联系方式',
+          icon: 'none'
+        });
+        return;
+      }
+
       postData.addAddress = curZTAddressData.address;
       postData.mobile = curZTAddressData.mobile;
       postData.linkMan = curZTAddressData.linkMan;
       postData.extJsonStr = JSON.stringify({
-        "zt_addr": curZTAddressData.address,
-        "zt_mob": curZTAddressData.mobile,
-        "zt_linkman": curZTAddressData.linkMan
+        "zt_addr": `自提点 地址：${curZTAddressData.address}`,
+        "zt_mob": `自提点 团长手机：${curZTAddressData.mobile}`,
+        "zt_linkman": `自提点 团长：${curZTAddressData.linkMan}`,
+        "zt_customer": `顾客手机：${that.data.contact}`
       })
     }
 
