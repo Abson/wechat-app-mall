@@ -98,6 +98,30 @@ Page({
     this.data.contact = e.detail.value
   },
   goCreateOrder() {
+    // 查看自提点信息
+    var that = this;
+    const { curZTAddressData } = that.data;
+    if (that.data.peisongType == 'zq') {
+      if (!curZTAddressData) {
+        wx.hideLoading();
+        wx.showToast({
+          title: '请设置自提点',
+          icon: 'none'
+        });
+        return;
+      }
+
+      if (that.data.contact.length != 11) {
+        wx.hideLoading();
+        wx.showToast({
+          title: '请填写您的联系方式',
+          icon: 'none'
+        });
+        return;
+      }
+    }
+
+    // 请求通知，发送订单
     wx.requestSubscribeMessage({
       // tmplIds: ['ITVuuD_cwYN-5BjXne8cSktDo43xetj0u-lpvFZEQQs',
       //   'dw9Tzh9r0sw7Gjab0ovQJx3bP3gdXmF_FZvpnxPd6hc'],
@@ -165,24 +189,6 @@ Page({
     // 自提点数据设置，为订单扩展字段
     const { curZTAddressData } = that.data;
     if (postData.peisongType == 'zq') {
-      if (!curZTAddressData) {
-        wx.hideLoading();
-        wx.showToast({
-          title: '请设置自提点',
-          icon: 'none'
-        });
-        return;
-      }
-
-      if (that.data.contact.length != 11) {
-        wx.hideLoading();
-        wx.showToast({
-          title: '请填写您的联系方式',
-          icon: 'none'
-        });
-        return;
-      }
-
       postData.addAddress = curZTAddressData.address;
       postData.mobile = curZTAddressData.mobile;
       postData.linkMan = curZTAddressData.linkMan;
@@ -327,7 +333,7 @@ Page({
     goodsJsonStr += "]";
     this.setData({
       isNeedLogistics: isNeedLogistics,
-      goodsJsonStr: goodsJsonStr
+      goodsJsonStr: goodsJsonStr,
     });
     this.createOrder();
   },
